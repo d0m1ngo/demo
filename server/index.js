@@ -1,4 +1,3 @@
-const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -18,7 +17,6 @@ app.use(express.static(__dirname + "/public"));
 
 // require("./models/Task");
 // require("./models/Job");
-// require("./config/passport");
 
 app.use('/api', require("./routes"));
 
