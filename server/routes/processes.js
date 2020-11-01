@@ -1,13 +1,10 @@
-const router = require('express').Router();
+const router = require("express").Router();
+const ProcessController = require("../controllers/ProcessController");
 
-router.get("/", function (req, res) {
-  res.send("GET request to the processes");
-});
+router.get("/", ProcessController.all);
 
-// POST method route
-router.post("/", function (req, res) {
-  res.send("POST request to the processes");
-});
+router.delete("/:processId", ProcessController.delete);
 
+router.post("/", ProcessController.create);
 
 module.exports = router;
