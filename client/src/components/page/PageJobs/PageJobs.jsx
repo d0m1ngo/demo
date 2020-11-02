@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
@@ -8,7 +9,10 @@ import useSort from "../../../hooks/useSort";
 import List from "../../ui/List/List";
 
 const JobContainer = styled.div``;
-const JobInput = styled.input``;
+const JobInput = styled.input`
+  margin: 20px;
+`;
+const JobLabel = styled.label``;
 
 const listHeader = ["status", "name"];
 
@@ -33,10 +37,12 @@ const PageJobs = ({ fetchJobs, jobs }) => {
   }, [fetchJobs, sortBy]);
   return (
     <JobContainer>
+      <JobLabel htmlFor="search">Search by name</JobLabel>
       <JobInput
         type="text"
         value={searchString}
         onChange={onChangeSearchString}
+        id="search"
       />
       <List
         data={jobs}
