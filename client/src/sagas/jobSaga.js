@@ -10,7 +10,7 @@ import { REQUEST_JOBS } from "../actions/jobs/jobsActionTypes";
 export function* fetchData(action) {
   LoadJobs();
   try {
-    const response = yield call(api.getJobs, { params: action.payload.params });
+    const response = yield call(api.getJobs, { ...action.payload });
     if (!response.ok) {
       yield put(LoadJobsFailed({ error: yield call([response, "json"]) }));
       return;

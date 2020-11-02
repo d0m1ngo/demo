@@ -2,37 +2,48 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import qs from "qs";
 import debounce from "lodash.debounce";
 import { requestJobs } from "../../../actions/jobs/jobsActions";
+import useSort from "../../../hooks/useSort";
 import List from "../../ui/List/List";
 
 const JobContainer = styled.div``;
+const JobInput = styled.input``;
 
-const listHeader = ["Status", "Name"];
+const listHeader = ["status", "name"];
 
 const excludeFields = ["_id", "processId"];
 
 const PageJobs = ({ fetchJobs, jobs }) => {
-  const [searchString, onChangeSearchString] = useState("");
+  const [searchString, handleSearchString] = useState("");
+  const [sortBy, onChangeSort] = useSort({});
   const getJobs = useCallback(
     debounce((search) => {
-      fetchJobs(search);
+      fetchJobs({ search, sortBy });
     }, 1000),
     []
   );
-  const handleChaneSearch = (event) => {
-    onChangeSearchString(event.target.value);
+  const onChangeSearchString = (event) => {
+    handleSearchString(event.target.value);
     getJobs(event.target.value);
   };
 
   useEffect(() => {
-    fetchJobs();
-  }, [fetchJobs]);
+    fetchJobs({ search: searchString, sortBy });
+  }, [fetchJobs, sortBy]);
   return (
     <JobContainer>
-      <input type="text" value={searchString} onChange={handleChaneSearch} />
-      <List data={jobs} header={listHeader} excludeFields={excludeFields} />
+      <JobInput
+        type="text"
+        value={searchString}
+        onChange={onChangeSearchString}
+      />
+      <List
+        data={jobs}
+        header={listHeader}
+        excludeFields={excludeFields}
+        onChangeSort={onChangeSort}
+      />
     </JobContainer>
   );
 };
@@ -44,9 +55,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
-  fetchJobs: (search) => {
-    const params = qs.parse(props.location.search, { ignoreQueryPrefix: true });
-    dispatch(requestJobs({ params: { ...params, search } }));
+  fetchJobs: ({ search, sortBy }) => {
+    const { processId } = props.match.params;
+    dispatch(requestJobs({ params: { search, ...sortBy }, processId }));
   },
 });
 

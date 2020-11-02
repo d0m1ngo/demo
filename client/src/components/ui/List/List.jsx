@@ -9,17 +9,14 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { ReactComponent as Remove } from "../../../images/remove.svg";
 
-const Table = styled.table`
+const ListTable = styled.table`
   width: 100%;
   border-collapse: collapse;
 `;
 
-const TD = styled.td`
-  border: 1px solid #ddd;
-  padding: 8px;
-`;
+const ListTableThead = styled.thead``;
 
-const TH = styled.th`
+const ListTableTh = styled.th`
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
@@ -27,20 +24,30 @@ const TH = styled.th`
   color: white;
   border: 1px solid #ddd;
   padding: 8px;
-`;
-
-const TR = styled.tr`
   cursor: pointer;
 `;
 
-const IconWrapper = styled.div`
+const ListTableTr = styled.tr``;
+
+const ListItemTd = styled.td`
+  border: 1px solid #ddd;
+  padding: 8px;
+`;
+
+const ListItemTbody = styled.tbody``;
+
+const ListItemTr = styled.tr`
+  cursor: pointer;
+`;
+
+const ListItemIconWrapper = styled.div`
   display: flex;
   justify-content: center;
 `;
 
 const filterExlcuded = (key, excludeFields) => !excludeFields.includes(key);
 
-const TableItem = ({
+const ListItem = ({
   item,
   excludeFields,
   onRedirect,
@@ -48,25 +55,25 @@ const TableItem = ({
   deleteItem,
 }) => {
   return (
-    <TR key={item._id} onClick={() => onRedirect(item._id)}>
+    <ListItemTr key={item._id} onClick={() => onRedirect(item._id)}>
       {Object.keys(item)
         .filter((key) => filterExlcuded(key, excludeFields))
         .map((key) => {
-          return <TD key={item[key]}>{item[key]}</TD>;
+          return <ListItemTd key={item[key]}>{item[key]}</ListItemTd>;
         })}
       {showRemove && (
-        <TD
+        <ListItemTd
           onClick={(e) => {
             e.stopPropagation();
             deleteItem(item._id);
           }}
         >
-          <IconWrapper>
+          <ListItemIconWrapper>
             <Remove width={20} height={20} />
-          </IconWrapper>
-        </TD>
+          </ListItemIconWrapper>
+        </ListItemTd>
       )}
-    </TR>
+    </ListItemTr>
   );
 };
 
@@ -77,20 +84,28 @@ const List = ({
   onRedirect,
   showRemove,
   deleteItem,
+  onChangeSort,
 }) => {
   return (
-    <Table>
-      <thead>
-        <tr>
+    <ListTable>
+      <ListTableThead>
+        <ListTableTr>
           {header.map((item) => (
-            <TH key={item}>{item}</TH>
+            <ListTableTh
+              key={item}
+              onClick={() => {
+                onChangeSort(item);
+              }}
+            >
+              {item}
+            </ListTableTh>
           ))}
-          {showRemove && <TH>Remove</TH>}
-        </tr>
-      </thead>
-      <tbody>
+          {showRemove && <ListTableTh>Remove</ListTableTh>}
+        </ListTableTr>
+      </ListTableThead>
+      <ListItemTbody>
         {data.map((item) => (
-          <TableItem
+          <ListItem
             item={item}
             excludeFields={excludeFields}
             onRedirect={onRedirect}
@@ -99,8 +114,8 @@ const List = ({
             deleteItem={deleteItem}
           />
         ))}
-      </tbody>
-    </Table>
+      </ListItemTbody>
+    </ListTable>
   );
 };
 

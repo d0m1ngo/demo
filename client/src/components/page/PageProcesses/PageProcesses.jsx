@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import useSort from "../../../hooks/useSort";
 import {
   requestProcesses,
   createRequestProcess,
@@ -15,7 +16,7 @@ const ProcessContainer = styled.div``;
 
 const Button = styled.button``;
 
-const listHeader = ["Name", "StartTime", "JobsCount", "Status"];
+const listHeader = ["name", "startTime", "jobsCount", "status"];
 
 const excludeFields = ["_id", "jobs"];
 
@@ -29,15 +30,22 @@ const PageProcesses = ({
   deleteStatus,
   pending,
 }) => {
+  const [sortBy, onChangeSort] = useSort({});
+
+  const getProcesses = useCallback(() => {
+    fetchProcesses({ sortBy });
+  }, [sortBy, fetchProcesses]);
+
   useEffect(() => {
-    fetchProcesses();
-  }, [fetchProcesses]);
+    getProcesses();
+  }, [getProcesses, sortBy]);
+
   useEffect(() => {
     if (postStatus === "ok" || deleteStatus === "ok") {
-      fetchProcesses();
+      getProcesses();
     }
-  }, [deleteStatus, postStatus, fetchProcesses]);
-  useInterval(fetchProcesses, 10000);
+  }, [deleteStatus, postStatus, getProcesses, sortBy]);
+  useInterval(getProcesses, 10000);
   return (
     <ProcessContainer>
       <Button onClick={createProcess} disabled={pending}>
@@ -50,6 +58,7 @@ const PageProcesses = ({
         onRedirect={handleRedirect}
         showRemove
         deleteItem={deleteProcess}
+        onChangeSort={onChangeSort}
       />
     </ProcessContainer>
   );
@@ -67,14 +76,14 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
-  fetchProcesses: () => {
-    dispatch(requestProcesses());
+  fetchProcesses: ({ sortBy }) => {
+    dispatch(requestProcesses({ params: { ...sortBy } }));
   },
   createProcess: () => {
     dispatch(createRequestProcess());
   },
-  handleRedirect: (id) => {
-    return props.history.push(`${urlPageJobs()}?processId=${id}`);
+  handleRedirect: (processId) => {
+    return props.history.push(`${urlPageJobs({ processId })}`);
   },
   deleteProcess: (processId) => {
     dispatch(deleteRequestProcess({ processId }));

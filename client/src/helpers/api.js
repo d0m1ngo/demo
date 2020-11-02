@@ -1,10 +1,10 @@
 import request from "./request";
 
 export default {
-  getJobs: (args) =>
+  getJobs: ({ processId, params }) =>
     request.get({
-      url: `/api/jobs/`,
-      ...args,
+      url: `/api/processes/${processId}/jobs`,
+      params,
     }),
   getProcesses: (args) =>
     request.get({
@@ -16,8 +16,9 @@ export default {
       url: `/api/processes/`,
       ...args,
     }),
-  deleteProcess: ({ processId }) =>
+  deleteProcess: ({ processId, params }) =>
     request.delete({
       url: `/api/processes/${processId}`,
+      params,
     }),
 };

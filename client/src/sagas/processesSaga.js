@@ -11,10 +11,10 @@ import {
   DELETE_REQUEST_PROCESS,
 } from "../actions/process/processActionTypes";
 
-export function* fetchData() {
+export function* fetchData(action) {
   yield put(LoadProcesses({ error: null, getStatus: "pending" }));
   try {
-    const response = yield call(api.getProcesses);
+    const response = yield call(api.getProcesses, { ...action.payload });
     if (!response.ok) {
       yield put(
         LoadProcesses({

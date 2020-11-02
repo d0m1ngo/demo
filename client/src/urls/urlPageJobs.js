@@ -1,3 +1,5 @@
 import url from "./url";
 
-export default url(() => "/jobs");
+export default url(
+  ({ processId = ":processId" }) => `/processes/${processId}/jobs`
+);

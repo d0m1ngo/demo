@@ -17,7 +17,6 @@ const createJob = async (processId) => {
   const newJob = new JobModel({ name: chance.profession(), status: getRandomStatus(), processId });
   const savedJob = await newJob.save();
   const countJobs = await JobModel.countDocuments({ processId });
-  console.log(countJobs);
   return await ProcessModel.findByIdAndUpdate(processId, { $push: { jobs: savedJob._id }, jobsCount: countJobs }, { new: true, useFindAndModify: false });
 };
 
@@ -29,10 +28,18 @@ const getProcessStatus = (process) => {
   return successStatus || failedStatus || runningStatus;
 };
 
+
 const ProcessController = {
   all: async (req, res) => {
-    const allProcesses = await ProcessModel.find().populate("jobs").lean().exec();
 
+    if(req.query.status) {
+      const allProcesses = await ProcessModel.find().populate("jobs").lean().exec();
+      const processesWithStatus = allProcesses.map((process) => ({ ...process, status: getProcessStatus(process), jobs: null }));
+      const sortedProcesses = processesWithStatus.sort((a, b) => (a.status < b.status ? -1 : 1) * (req.query.status));
+      return res.json(sortedProcesses);
+
+    }
+    const allProcesses = await ProcessModel.find().sort({...req.query }).populate("jobs").lean().exec();
     const processesWithStatus = allProcesses.map((process) => ({ ...process, status: getProcessStatus(process), jobs: null }));
     res.json(processesWithStatus);
   },
