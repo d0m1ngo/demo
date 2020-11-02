@@ -11,10 +11,9 @@ export default {
       url: `/api/processes/`,
       ...args,
     }),
-  createProcess: (args) =>
+  createProcess: () =>
     request.post({
       url: `/api/processes/`,
-      ...args,
     }),
   deleteProcess: ({ processId, params }) =>
     request.delete({

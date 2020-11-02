@@ -7,6 +7,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { GREEN, WHITE, BORDER_COLOR } from "../../../const/color";
 import { ReactComponent as Remove } from "../../../images/remove.svg";
 
 const ListTable = styled.table`
@@ -20,9 +21,9 @@ const ListTableTh = styled.th`
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #4caf50;
-  color: white;
-  border: 1px solid #ddd;
+  background-color: ${GREEN};
+  color: ${WHITE};
+  border: 1px solid ${BORDER_COLOR};
   padding: 8px;
   cursor: pointer;
 `;
@@ -30,7 +31,7 @@ const ListTableTh = styled.th`
 const ListTableTr = styled.tr``;
 
 const ListItemTd = styled.td`
-  border: 1px solid #ddd;
+  border: 1px solid ${BORDER_COLOR};
   padding: 8px;
 `;
 

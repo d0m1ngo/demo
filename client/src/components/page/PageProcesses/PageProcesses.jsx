@@ -8,13 +8,25 @@ import {
   createRequestProcess,
   deleteRequestProcess,
 } from "../../../actions/process/processActions";
+import { GREEN, WHITE } from "../../../const/color";
 import List from "../../ui/List/List";
 import urlPageJobs from "../../../urls/urlPageJobs";
 import useInterval from "../../../hooks/useInterval";
 
 const ProcessContainer = styled.div``;
 
-const Button = styled.button``;
+const Button = styled.button`
+  background-color: ${GREEN};
+  border: none;
+  color: ${WHITE};
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+`;
 
 const listHeader = ["name", "startTime", "jobsCount", "status"];
 
@@ -31,7 +43,6 @@ const PageProcesses = ({
   pending,
 }) => {
   const [sortBy, onChangeSort] = useSort({});
-
   const getProcesses = useCallback(() => {
     fetchProcesses({ sortBy });
   }, [sortBy, fetchProcesses]);
@@ -69,9 +80,7 @@ const mapStateToProps = (state) => {
     processes: state.processes.data,
     postStatus: state.processes.postStatus,
     deleteStatus: state.processes.deleteStatus,
-    pending:
-      state.processes.deleteStatus === "pending" ||
-      state.processes.postStatus === "pending",
+    pending: state.processes.postStatus === "pending",
   };
 };
 
